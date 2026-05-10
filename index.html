@@ -7,25 +7,29 @@
     <meta name="description" content="Portfolio Farizy - Cybersecurity Defence, AI Engineering, Vibe Coder">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#FF6B35',
-                        'primary-light': '#FF8C42',
-                        'primary-dark': '#E85D04',
-                        dark: '#050505',
+                        gold: '#D4A574',
+                        'gold-light': '#E8C9A0',
+                        'gold-dark': '#B8935F',
+                        orange: '#FF8C42',
+                        'orange-soft': '#FFAD7A',
+                        dark: '#030303',
                         darker: '#000000',
-                        surface: '#0A0A0A',
-                        'surface-elevated': '#111111',
-                        'surface-hover': '#1A1A1A',
-                        muted: '#737373'
+                        surface: '#080808',
+                        'surface-raised': '#0F0F0F',
+                        'surface-hover': '#161616',
+                        muted: '#8A8A8A',
+                        cream: '#F5F0E8'
                     },
                     fontFamily: {
-                        display: ['Cormorant Garamond', 'serif'],
+                        display: ['Playfair Display', 'serif'],
+                        accent: ['Cormorant Garamond', 'serif'],
                         body: ['Inter', 'sans-serif']
                     }
                 }
@@ -39,193 +43,261 @@
         body {
             font-family: 'Inter', sans-serif;
             background: #000000;
-            color: #f5f5f5;
+            color: #F5F0E8;
             overflow-x: hidden;
-            line-height: 1.6;
+            line-height: 1.7;
         }
         
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #FF6B35; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: #D4A574; border-radius: 10px; }
         
-        /* Canvas Background */
+        /* Loading Screen */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1.2s ease, visibility 1.2s;
+        }
+        #loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        
+        .loader-content {
+            max-width: 600px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .loader-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-style: italic;
+            color: #D4A574;
+            line-height: 1.8;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: quoteFade 4s ease forwards;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loader-author {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.9rem;
+            color: #8A8A8A;
+            margin-top: 1.5rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeIn 1s ease 1s forwards;
+        }
+        
+        .loader-line {
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #D4A574, transparent);
+            margin: 2rem auto;
+            animation: lineExpand 2.5s ease forwards;
+        }
+        
+        .loader-progress {
+            width: 200px;
+            height: 1px;
+            background: rgba(212, 165, 116, 0.1);
+            margin: 2rem auto 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .loader-progress-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: #D4A574;
+            animation: progressLoad 5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        @keyframes quoteFade {
+            0% { opacity: 0; transform: translateY(20px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        @keyframes lineExpand {
+            to { width: 120px; }
+        }
+        
+        @keyframes progressLoad {
+            to { width: 100%; }
+        }
+        
+        /* Particle Canvas */
         #particle-canvas {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: 0;
             pointer-events: none;
-            opacity: 0.4;
+            opacity: 0.35;
         }
         
-        /* Gradient Orbs */
-        .gradient-orb {
+        /* Ambient Orbs */
+        .ambient-orb {
             position: fixed;
             border-radius: 50%;
-            filter: blur(120px);
+            filter: blur(150px);
             pointer-events: none;
             z-index: 0;
-            opacity: 0.15;
-            animation: orbFloat 20s ease-in-out infinite;
+            opacity: 0.12;
         }
-        .orb-1 { width: 600px; height: 600px; background: #FF6B35; top: -200px; right: -100px; animation-delay: 0s; }
-        .orb-2 { width: 500px; height: 500px; background: #E85D04; bottom: -150px; left: -100px; animation-delay: -7s; }
-        .orb-3 { width: 400px; height: 400px; background: #FF8C42; top: 50%; left: 50%; animation-delay: -14s; }
+        .orb-a { width: 700px; height: 700px; background: #D4A574; top: -300px; right: -200px; animation: drift 25s ease-in-out infinite; }
+        .orb-b { width: 600px; height: 600px; background: #FF8C42; bottom: -200px; left: -200px; animation: drift 20s ease-in-out infinite reverse; }
+        .orb-c { width: 500px; height: 500px; background: #B8935F; top: 40%; left: 30%; animation: drift 30s ease-in-out infinite; animation-delay: -10s; }
         
-        @keyframes orbFloat {
+        @keyframes drift {
             0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -30px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
+            33% { transform: translate(40px, -40px) scale(1.15); }
+            66% { transform: translate(-30px, 30px) scale(0.9); }
         }
         
-        /* Animations */
+        /* Reveal Animations */
         .reveal {
             opacity: 0;
-            transform: translateY(40px);
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(50px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
         .reveal-left {
             opacity: 0;
-            transform: translateX(-60px);
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateX(-80px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .reveal-left.active {
-            opacity: 1;
-            transform: translateX(0);
-        }
+        .reveal-left.active { opacity: 1; transform: translateX(0); }
+        
         .reveal-right {
             opacity: 0;
-            transform: translateX(60px);
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateX(80px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .reveal-right.active {
-            opacity: 1;
-            transform: translateX(0);
-        }
+        .reveal-right.active { opacity: 1; transform: translateX(0); }
+        
         .reveal-scale {
             opacity: 0;
-            transform: scale(0.9);
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: scale(0.85);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .reveal-scale.active {
-            opacity: 1;
-            transform: scale(1);
+        .reveal-scale.active { opacity: 1; transform: scale(1); }
+        
+        .delay-1 { transition-delay: 0.15s; }
+        .delay-2 { transition-delay: 0.3s; }
+        .delay-3 { transition-delay: 0.45s; }
+        .delay-4 { transition-delay: 0.6s; }
+        .delay-5 { transition-delay: 0.75s; }
+        
+        /* Hero */
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
         }
         
-        .stagger-1 { transition-delay: 0.1s; }
-        .stagger-2 { transition-delay: 0.2s; }
-        .stagger-3 { transition-delay: 0.3s; }
-        .stagger-4 { transition-delay: 0.4s; }
-        .stagger-5 { transition-delay: 0.5s; }
+        .hero-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-style: italic;
+        }
         
-        /* Hero Typewriter */
-        .typewriter {
+        /* Typewriter */
+        .typewriter-container {
             overflow: hidden;
-            border-right: 2px solid #FF6B35;
+            display: inline-block;
+        }
+        .typewriter-text {
+            overflow: hidden;
             white-space: nowrap;
-            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
-            max-width: fit-content;
+            border-right: 2px solid #D4A574;
+            animation: typing 4s steps(50, end) forwards, blink-caret 0.8s step-end infinite;
+            width: 0;
         }
         @keyframes typing { from { width: 0 } to { width: 100% } }
-        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #FF6B35 } }
+        @keyframes blink-caret { 50% { border-color: transparent } }
         
-        /* Glow Card */
-        .glow-card {
+        /* Elegant Cards */
+        .lux-card {
             position: relative;
-            background: #0A0A0A;
-            border: 1px solid rgba(255, 107, 53, 0.1);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            background: rgba(8, 8, 8, 0.7);
+            border: 1px solid rgba(212, 165, 116, 0.08);
+            backdrop-filter: blur(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             overflow: hidden;
         }
-        .glow-card::before {
+        .lux-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(212, 165, 116, 0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.6s;
+        }
+        .lux-card:hover::before { opacity: 1; }
+        .lux-card:hover {
+            border-color: rgba(212, 165, 116, 0.2);
+            transform: translateY(-6px);
+            box-shadow: 0 30px 60px -20px rgba(212, 165, 116, 0.1), 0 0 0 1px rgba(212, 165, 116, 0.05);
+        }
+        
+        /* Mouse glow */
+        .mouse-glow {
+            position: relative;
+        }
+        .mouse-glow::after {
             content: '';
             position: absolute;
             top: var(--mouse-y, 50%);
             left: var(--mouse-x, 50%);
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255,107,53,0.15) 0%, transparent 70%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(212,165,116,0.08) 0%, transparent 70%);
             transform: translate(-50%, -50%);
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.4s;
             pointer-events: none;
-            z-index: 1;
+            z-index: 0;
         }
-        .glow-card:hover::before { opacity: 1; }
-        .glow-card:hover {
-            border-color: rgba(255, 107, 53, 0.3);
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px -15px rgba(255, 107, 53, 0.15);
-        }
+        .mouse-glow:hover::after { opacity: 1; }
         
-        /* Provider Card */
-        .provider-card {
-            background: rgba(10, 10, 10, 0.8);
-            border: 1px solid rgba(255, 107, 53, 0.08);
-            transition: all 0.4s ease;
-            backdrop-filter: blur(10px);
-        }
-        .provider-card:hover {
-            border-color: rgba(255, 107, 53, 0.4);
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 0 30px rgba(255, 107, 53, 0.1);
-        }
-        
-        /* Link Hover */
-        .link-elegant {
+        /* Profile */
+        .profile-frame {
             position: relative;
-            color: #737373;
-            transition: color 0.3s ease;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
         }
-        .link-elegant::after {
+        .profile-frame::before {
             content: '';
             position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: #FF6B35;
-            transition: width 0.3s ease;
-        }
-        .link-elegant:hover { color: #FF6B35; }
-        .link-elegant:hover::after { width: 100%; }
-        
-        /* Marquee */
-        .marquee-container {
-            overflow: hidden;
-            white-space: nowrap;
-            position: relative;
-        }
-        .marquee-content {
-            display: inline-block;
-            animation: marquee 30s linear infinite;
-        }
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        
-        /* Profile Image Ring */
-        .profile-ring {
-            position: relative;
-            width: 160px;
-            height: 160px;
-        }
-        .profile-ring::before {
-            content: '';
-            position: absolute;
-            inset: -3px;
+            inset: -4px;
             border-radius: 50%;
-            background: conic-gradient(from 0deg, #FF6B35, #E85D04, #FF8C42, #FF6B35);
-            animation: rotate 4s linear infinite;
-            opacity: 0.6;
+            background: conic-gradient(from 0deg, #D4A574, #B8935F, #FF8C42, #D4A574);
+            animation: spin 8s linear infinite;
+            opacity: 0.4;
         }
-        .profile-ring img {
+        .profile-frame img {
             position: relative;
             z-index: 1;
             border-radius: 50%;
@@ -234,240 +306,423 @@
             object-fit: cover;
             border: 3px solid #000;
         }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* Status Badge */
-        .status-released {
-            background: rgba(255, 107, 53, 0.1);
-            color: #FF8C42;
-            border: 1px solid rgba(255, 107, 53, 0.2);
+        .float-gentle {
+            animation: floatGentle 8s ease-in-out infinite;
         }
-        .status-unreleased {
-            background: rgba(115, 115, 115, 0.1);
-            color: #737373;
-            border: 1px solid rgba(115, 115, 115, 0.2);
+        @keyframes floatGentle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
         
-        /* Navigation */
-        .nav-blur {
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 107, 53, 0.05);
+        /* Section Title */
+        .section-label {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #D4A574;
         }
         
-        /* Smooth image load */
-        img { opacity: 0; transition: opacity 0.5s ease; }
-        img.loaded { opacity: 1; }
-        
-        /* Floating animation */
-        .float { animation: float 6s ease-in-out infinite; }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            line-height: 1.2;
         }
         
-        /* Line decoration */
-        .line-deco {
-            width: 60px;
+        .gold-line {
+            width: 80px;
             height: 1px;
-            background: linear-gradient(90deg, #FF6B35, transparent);
+            background: linear-gradient(90deg, #D4A574, transparent);
+        }
+        .gold-line-center {
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #D4A574, transparent);
+            margin: 0 auto;
         }
         
-        /* Button Primary */
-        .btn-primary {
-            background: linear-gradient(135deg, #FF6B35, #E85D04);
-            color: white;
-            padding: 12px 32px;
-            border-radius: 4px;
+        /* Status */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
             font-weight: 500;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
+        }
+        .status-live {
+            background: rgba(212, 165, 116, 0.08);
+            color: #D4A574;
+            border: 1px solid rgba(212, 165, 116, 0.15);
+        }
+        .status-soon {
+            background: rgba(138, 138, 138, 0.06);
+            color: #8A8A8A;
+            border: 1px solid rgba(138, 138, 138, 0.1);
+        }
+        .status-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* Provider Grid */
+        .provider-item {
+            background: rgba(8, 8, 8, 0.6);
+            border: 1px solid rgba(212, 165, 116, 0.06);
+            transition: all 0.5s ease;
             position: relative;
             overflow: hidden;
         }
-        .btn-primary::before {
+        .provider-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(212,165,116,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .provider-item:hover::before { opacity: 1; }
+        .provider-item:hover {
+            border-color: rgba(212, 165, 116, 0.25);
+            transform: translateY(-3px);
+        }
+        
+        /* Connection Cards */
+        .conn-card {
+            position: relative;
+            background: rgba(15, 15, 15, 0.8);
+            border: 1px solid rgba(212, 165, 116, 0.06);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+        .conn-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #D4A574, transparent);
+            transform: scaleX(0);
+            transition: transform 0.5s;
+        }
+        .conn-card:hover::after { transform: scaleX(1); }
+        .conn-card:hover {
+            border-color: rgba(212, 165, 116, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+        }
+        
+        /* CTA Button */
+        .btn-lux {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, rgba(212,165,116,0.1), rgba(212,165,116,0.02));
+            border: 1px solid rgba(212, 165, 116, 0.25);
+            color: #D4A574;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.5s;
+        }
+        .btn-lux::before {
             content: '';
             position: absolute;
             top: 0; left: -100%;
             width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(212,165,116,0.1), transparent);
+            transition: left 0.8s;
         }
-        .btn-primary:hover::before { left: 100%; }
-        .btn-primary:hover {
+        .btn-lux:hover::before { left: 100%; }
+        .btn-lux:hover {
+            border-color: rgba(212, 165, 116, 0.5);
+            color: #F5F0E8;
+            box-shadow: 0 0 40px rgba(212, 165, 116, 0.15);
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px -10px rgba(255, 107, 53, 0.5);
+        }
+        .btn-lux svg { transition: transform 0.3s; }
+        .btn-lux:hover svg { transform: translateX(4px); }
+        
+        /* Marquee */
+        .marquee-track {
+            display: flex;
+            animation: marquee 40s linear infinite;
+            width: max-content;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
         
-        /* Section divider */
-        .section-divider {
+        /* Navigation */
+        .nav-glass {
+            background: rgba(3, 3, 3, 0.6);
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(212, 165, 116, 0.04);
+        }
+        
+        /* Text selection */
+        ::selection {
+            background: rgba(212, 165, 116, 0.3);
+            color: #F5F0E8;
+        }
+        
+        /* Image */
+        img { opacity: 0; transition: opacity 0.8s ease; }
+        img.loaded { opacity: 1; }
+        
+        /* Divider */
+        .ornament-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 3rem 0;
+        }
+        .ornament-divider .line {
+            width: 60px;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,107,53,0.2), transparent);
-            margin: 0 auto;
-            max-width: 200px;
+            background: linear-gradient(90deg, transparent, rgba(212,165,116,0.3));
+        }
+        .ornament-divider .line:last-child {
+            background: linear-gradient(90deg, rgba(212,165,116,0.3), transparent);
+        }
+        .ornament-divider .diamond {
+            width: 6px;
+            height: 6px;
+            background: #D4A574;
+            transform: rotate(45deg);
+            opacity: 0.5;
+        }
+        
+        /* Philosophy section */
+        .philosophy-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            line-height: 2;
+            color: #8A8A8A;
+            font-style: italic;
+        }
+        
+        /* Stats counter */
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 400;
+            color: #D4A574;
+            line-height: 1;
         }
         
         /* Tooltip */
-        .tooltip {
+        .tip {
             position: relative;
         }
-        .tooltip::after {
-            content: attr(data-tip);
+        .tip::after {
+            content: attr(data-label);
             position: absolute;
-            bottom: 100%;
+            bottom: calc(100% + 8px);
             left: 50%;
-            transform: translateX(-50%) translateY(-8px);
-            padding: 4px 12px;
-            background: #1A1A1A;
-            border: 1px solid rgba(255,107,53,0.2);
-            border-radius: 4px;
-            font-size: 12px;
-            color: #FF8C42;
+            transform: translateX(-50%) scale(0.9);
+            padding: 6px 14px;
+            background: #0F0F0F;
+            border: 1px solid rgba(212,165,116,0.15);
+            border-radius: 6px;
+            font-size: 11px;
+            color: #D4A574;
             white-space: nowrap;
             opacity: 0;
             pointer-events: none;
             transition: all 0.3s;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
         }
-        .tooltip:hover::after {
+        .tip:hover::after {
             opacity: 1;
-            transform: translateX(-50%) translateY(-4px);
+            transform: translateX(-50%) scale(1);
         }
+        
+        /* Smooth parallax wrapper */
+        .parallax-slow { will-change: transform; }
     </style>
 </head>
-<body class="antialiased">
+<body>
 
-    <!-- Background Effects -->
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="loader-content">
+            <div class="loader-line"></div>
+            <div class="loader-quote" id="loaderQuote">
+                "The only way to do great work is to love what you do."
+            </div>
+            <div class="loader-author" id="loaderAuthor">— Ancient Wisdom</div>
+            <div class="loader-progress">
+                <div class="loader-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ambient Background -->
     <canvas id="particle-canvas"></canvas>
-    <div class="gradient-orb orb-1"></div>
-    <div class="gradient-orb orb-2"></div>
-    <div class="gradient-orb orb-3"></div>
+    <div class="ambient-orb orb-a"></div>
+    <div class="ambient-orb orb-b"></div>
+    <div class="ambient-orb orb-c"></div>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 nav-blur transition-all duration-300" id="navbar">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="font-display text-2xl font-semibold tracking-wide text-white">
-                Riz<span class="text-primary">-Dev</span>
+    <nav class="fixed top-0 w-full z-50 nav-glass transition-all duration-500" id="navbar">
+        <div class="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center">
+            <a href="#" class="font-display text-xl tracking-wide text-cream">
+                Riz<span class="text-gold">-Dev</span>
             </a>
-            <div class="hidden md:flex items-center gap-8">
-                <a href="#profil" class="link-elegant text-sm tracking-wide">Profil</a>
-                <a href="#proyek" class="link-elegant text-sm tracking-wide">Proyek</a>
-                <a href="#provider" class="link-elegant text-sm tracking-wide">Provider</a>
-                <a href="#koneksi" class="link-elegant text-sm tracking-wide">Koneksi</a>
+            <div class="hidden md:flex items-center gap-10">
+                <a href="#tentang" class="text-xs tracking-[0.2em] uppercase text-muted hover:text-gold transition-colors duration-300">Tentang</a>
+                <a href="#visi" class="text-xs tracking-[0.2em] uppercase text-muted hover:text-gold transition-colors duration-300">Visi</a>
+                <a href="#proyek" class="text-xs tracking-[0.2em] uppercase text-muted hover:text-gold transition-colors duration duration-300">Proyek</a>
+                <a href="#provider" class="text-xs tracking-[0.2em] uppercase text-muted hover:text-gold transition-colors duration-300">Provider</a>
+                <a href="#koneksi" class="text-xs tracking-[0.2em] uppercase text-muted hover:text-gold transition-colors duration-300">Koneksi</a>
             </div>
-            <button onclick="document.getElementById('koneksi').scrollIntoView({behavior:'smooth'})" class="btn-primary text-sm">
-                Hubungi
-            </button>
+            <a href="#koneksi" class="btn-lux text-xs py-3 px-6">
+                <span>Hubungi</span>
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+            </a>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="relative min-h-screen flex items-center justify-center px-6 pt-20">
-        <div class="max-w-5xl mx-auto text-center z-10">
-            <div class="reveal-scale mb-8 flex justify-center">
-                <div class="profile-ring float">
+    <section class="relative min-h-screen flex items-center justify-center px-6 pt-24 pb-16">
+        <div class="max-w-5xl mx-auto text-center z-10 relative">
+            
+            <div class="reveal-scale mb-10 flex justify-center">
+                <div class="profile-frame float-gentle">
                     <img src="https://k.top4top.io/p_3782w31y30.png" alt="Farizy" onload="this.classList.add('loaded')">
                 </div>
             </div>
             
-            <p class="reveal font-body text-primary text-sm tracking-[0.3em] uppercase mb-4 stagger-1">Cybersecurity • AI Engineering • Programming</p>
+            <p class="reveal section-label mb-6 delay-1">Cybersecurity &middot; AI Engineering &middot; Programming</p>
             
-            <h1 class="reveal font-display text-5xl md:text-7xl lg:text-8xl font-light text-white mb-6 leading-tight stagger-2">
+            <h1 class="reveal hero-title text-6xl md:text-8xl lg:text-9xl text-cream mb-8 delay-2">
                 Farizy
             </h1>
             
-            <div class="reveal flex justify-center mb-8 stagger-3">
-                <p class="typewriter font-body text-lg md:text-xl text-muted max-w-2xl">
-                    Change imagine to code.
-                </p>
+            <div class="reveal flex justify-center mb-10 delay-3">
+                <div class="typewriter-container">
+                    <p class="typewriter-text hero-subtitle text-xl md:text-2xl text-muted max-w-3xl mx-auto">
+                        Mengubah imajinasi masa kecil menjadi kode.
+                    </p>
+                </div>
             </div>
             
-            <div class="reveal flex flex-wrap justify-center gap-4 stagger-4">
-                <span class="px-4 py-2 border border-primary/20 rounded-full text-xs text-primary/80 tracking-wider">PYTHON</span>
-                <span class="px-4 py-2 border border-primary/20 rounded-full text-xs text-primary/80 tracking-wider">NODE.JS</span>
-                <span class="px-4 py-2 border border-primary/20 rounded-full text-xs text-primary/80 tracking-wider">HTML</span>
-                <span class="px-4 py-2 border border-primary/20 rounded-full text-xs text-primary/80 tracking-wider">AI PROMPTING</span>
+            <div class="reveal flex flex-wrap justify-center gap-3 delay-4">
+                <span class="px-5 py-2 border border-gold/15 rounded-full text-[11px] text-gold/70 tracking-[0.2em] uppercase">Python</span>
+                <span class="px-5 py-2 border border-gold/15 rounded-full text-[11px] text-gold/70 tracking-[0.2em] uppercase">Node.js</span>
+                <span class="px-5 py-2 border border-gold/15 rounded-full text-[11px] text-gold/70 tracking-[0.2em] uppercase">HTML</span>
+                <span class="px-5 py-2 border border-gold/15 rounded-full text-[11px] text-gold/70 tracking-[0.2em] uppercase">AI Prompting</span>
+                <span class="px-5 py-2 border border-gold/15 rounded-full text-[11px] text-gold/70 tracking-[0.2em] uppercase">Vibe Coding</span>
             </div>
             
-            <div class="reveal mt-16 stagger-5">
-                <a href="#proyek" class="inline-flex flex-col items-center gap-2 text-muted hover:text-primary transition-colors group">
-                    <span class="text-xs tracking-widest uppercase">Jelajahi</span>
-                    <svg class="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            <div class="reveal mt-20 delay-5">
+                <a href="#tentang" class="inline-flex flex-col items-center gap-3 text-muted hover:text-gold transition-colors duration-500 group">
+                    <span class="text-[10px] tracking-[0.4em] uppercase">Jelajahi</span>
+                    <svg class="w-5 h-5 animate-bounce opacity-50" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
                     </svg>
                 </a>
             </div>
         </div>
     </section>
 
-    <div class="section-divider reveal"></div>
+    <div class="ornament-divider reveal">
+        <div class="line"></div>
+        <div class="diamond"></div>
+        <div class="line"></div>
+    </div>
 
-    <!-- Profile Section -->
-    <section id="profil" class="relative py-32 px-6 z-10">
+    <!-- About / Community Section -->
+    <section id="tentang" class="relative py-28 px-6 z-10">
         <div class="max-w-6xl mx-auto">
-            <div class="grid md:grid-cols-2 gap-16 items-center">
-                <div class="reveal-left">
-                    <p class="text-primary text-sm tracking-[0.2em] uppercase mb-4">Tentang Saya</p>
-                    <h2 class="font-display text-4xl md:text-5xl font-light text-white mb-6 leading-tight">
-                        Seorang Pengembang yang Berdedikasi pada <em class="text-primary">Inovasi</em>
+            <div class="grid lg:grid-cols-12 gap-16 items-start">
+                
+                <div class="lg:col-span-5 reveal-left">
+                    <p class="section-label mb-4">Tentang Saya</p>
+                    <h2 class="section-title text-4xl md:text-5xl text-cream mb-8">
+                        Seorang Pengembang yang Berdedikasi pada <em class="text-gold">Inovasi dan Komunitas</em>
                     </h2>
-                    <div class="line-deco mb-8"></div>
-                    <p class="text-muted leading-relaxed mb-6">
-                        Saya adalah praktisi di bidang Cybersecurity Defence, AI Engineering, dan Pengembangan Perangkat Lunak. 
-                        Dengan keahlian dalam Python, Node.js, dan HTML, saya menciptakan solusi teknologi yang aman, efisien, dan berdampak positif.
-                    </p>
-                    <p class="text-muted leading-relaxed mb-8">
-                        Visi saya sederhana: merealisasikan setiap imajinasi menjadi kode yang berfungsi. 
-                        Setiap proyek adalah manifestasi dari rasa ingin tahu dan semangat untuk memecahkan masalah dunia nyata.
-                    </p>
+                    <div class="gold-line mb-10"></div>
                     
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="glow-card p-5 rounded-lg">
-                            <p class="font-display text-3xl text-primary mb-1">4+</p>
-                            <p class="text-xs text-muted uppercase tracking-wider">Proyek Aktif</p>
-                        </div>
-                        <div class="glow-card p-5 rounded-lg">
-                            <p class="font-display text-3xl text-primary mb-1">12</p>
-                            <p class="text-xs text-muted uppercase tracking-wider">AI Provider</p>
-                        </div>
+                    <div class="space-y-6 text-muted text-sm leading-[1.9]">
+                        <p>
+                            Saya adalah Farizy, seorang praktisi di bidang Cybersecurity Defence, AI Engineering, dan Pengembangan Perangkat Lunak yang berkomitmen untuk menciptakan teknologi yang tidak hanya canggih, tetapi juga dapat diakses oleh siapa saja. Dengan keahlian dalam Python, Node.js, dan HTML, saya membangun solusi yang aman, efisien, dan berdampak positif bagi komunitas pengembang.
+                        </p>
+                        <p>
+                            Setiap baris kode yang saya tulis adalah manifestasi dari rasa ingin tahu yang tak pernah padam dan semangat untuk memecahkan masalah dunia nyata. Saya percaya bahwa teknologi sejati adalah teknologi yang memberdayakan, bukan yang membuat manusia bergantung. Oleh karena itu, seluruh proyek yang saya kembangkan sepenuhnya open-source, tanpa biaya berlangganan, dan dapat dijalankan pada lingkungan pribadi masing-masing pengguna.
+                        </p>
                     </div>
                 </div>
                 
-                <div class="reveal-right">
-                    <div class="space-y-6">
-                        <div class="glow-card p-6 rounded-xl">
-                            <div class="flex items-center gap-4 mb-3">
-                                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                                    </svg>
-                                </div>
-                                <h3 class="font-display text-xl text-white">Cybersecurity Defence</h3>
+                <div class="lg:col-span-7 reveal-right space-y-6">
+                    <div class="lux-card mouse-glow rounded-2xl p-8 md:p-10">
+                        <div class="flex items-start gap-5 mb-5">
+                            <div class="w-12 h-12 rounded-xl bg-gold/5 border border-gold/10 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                </svg>
                             </div>
-                            <p class="text-sm text-muted">Melindungi sistem dan data dari ancaman digital melalui analisis mendalam dan strategi pertahanan proaktif.</p>
+                            <div>
+                                <h3 class="font-display text-xl text-cream mb-2">Cybersecurity Defence</h3>
+                                <p class="text-muted text-sm leading-relaxed">
+                                    Melindungi sistem dan data dari ancaman digital melalui analisis mendalam dan strategi pertahanan proaktif. Keamanan bukanlah fitur tambahan, melainkan fondasi dari setiap arsitektur perangkat lunak yang saya bangun.
+                                </p>
+                            </div>
                         </div>
-                        
-                        <div class="glow-card p-6 rounded-xl">
-                            <div class="flex items-center gap-4 mb-3">
-                                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                    </svg>
-                                </div>
-                                <h3 class="font-display text-xl text-white">AI Engineering</h3>
+                    </div>
+                    
+                    <div class="lux-card mouse-glow rounded-2xl p-8 md:p-10">
+                        <div class="flex items-start gap-5 mb-5">
+                            <div class="w-12 h-12 rounded-xl bg-gold/5 border border-gold/10 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                </svg>
                             </div>
-                            <p class="text-sm text-muted">Mengembangkan solusi berbasis kecerdasan buatan yang mengintegrasikan berbagai model dan provider untuk performa optimal.</p>
+                            <div>
+                                <h3 class="font-display text-xl text-cream mb-2">AI Engineering</h3>
+                                <p class="text-muted text-sm leading-relaxed">
+                                    Mengembangkan solusi berbasis kecerdasan buatan yang mengintegrasikan berbagai model dan provider untuk performa optimal. Saya merancang sistem AI yang otonom, efisien, dan menghormati privasi pengguna dengan beroperasi sepenuhnya pada lingkungan lokal.
+                                </p>
+                            </div>
                         </div>
-                        
-                        <div class="glow-card p-6 rounded-xl">
-                            <div class="flex items-center gap-4 mb-3">
-                                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                                    </svg>
-                                </div>
-                                <h3 class="font-display text-xl text-white">Vibe Coding</h3>
+                    </div>
+                    
+                    <div class="lux-card mouse-glow rounded-2xl p-8 md:p-10">
+                        <div class="flex items-start gap-5 mb-5">
+                            <div class="w-12 h-12 rounded-xl bg-gold/5 border border-gold/10 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                                </svg>
                             </div>
-                            <p class="text-sm text-muted">Menciptakan pengalaman pengembangan yang intuitif dan menyenangkan melalui pendekatan kreatif dan modern.</p>
+                            <div>
+                                <h3 class="font-display text-xl text-cream mb-2">Vibe Coding</h3>
+                                <p class="text-muted text-sm leading-relaxed">
+                                    Menciptakan pengalaman pengembangan yang intuitif dan menyenangkan melalui pendekatan kreatif dan modern. Bagi saya, coding adalah seni—sebuah medium untuk mengekspresikan imajinasi dan memberikan solusi yang berarti bagi banyak orang.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -475,415 +730,550 @@
         </div>
     </section>
 
-    <div class="section-divider reveal"></div>
+    <div class="ornament-divider reveal">
+        <div class="line"></div>
+        <div class="diamond"></div>
+        <div class="line"></div>
+    </div>
+
+    <!-- Vision / Philosophy Section (NEW - fills space) -->
+    <section id="visi" class="relative py-28 px-6 z-10">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <p class="section-label mb-4">Filosofi & Visi</p>
+                <h2 class="section-title text-4xl md:text-6xl text-cream mb-6">Komunitas dan Misi</h2>
+                <div class="gold-line-center mb-8"></div>
+            </div>
+            
+            <div class="reveal lux-card rounded-3xl p-10 md:p-16 text-center mouse-glow">
+                <p class="philosophy-text mb-8 max-w-3xl mx-auto">
+                    "Di era di mana teknologi seringkali membangun tembok pembatas, saya memilih untuk membangun jembatan. Setiap proyek yang lahir dari tangan ini adalah undangan—sebuah ajakan bagi siapa pun yang ingin belajar, berkembang, dan berkontribusi tanpa terhalang oleh biaya atau batasan akses."
+                </p>
+                
+                <div class="grid md:grid-cols-3 gap-10 mt-14 text-left">
+                    <div class="reveal delay-1">
+                        <div class="w-10 h-10 rounded-full bg-gold/5 border border-gold/10 flex items-center justify-center mb-5">
+                            <span class="font-display text-gold text-lg">I</span>
+                        </div>
+                        <h4 class="font-display text-lg text-cream mb-3">Aksesibilitas Tanpa Batas</h4>
+                        <p class="text-muted text-sm leading-relaxed">
+                            Saya percaya bahwa pengetahuan dan teknologi adalah hak dasar setiap individu. Tidak ada yang harus tertinggal hanya karena keterbatasan finansial. Setiap aplikasi, setiap baris kode, dan setiap dokumentasi yang saya hasilkan tersedia secara terbuka untuk komunitas global.
+                        </p>
+                    </div>
+                    
+                    <div class="reveal delay-2">
+                        <div class="w-10 h-10 rounded-full bg-gold/5 border border-gold/10 flex items-center justify-center mb-5">
+                            <span class="font-display text-gold text-lg">II</span>
+                        </div>
+                        <h4 class="font-display text-lg text-cream mb-3">Keamanan sebagai Prioritas</h4>
+                        <p class="text-muted text-sm leading-relaxed">
+                            Di dunia yang semakin terhubung, kesadaran akan keamanan digital seringkali tertinggal. Melalui proyek-proyek saya, terutama aplikasi antivirus, saya berupaya meningkatkan literasi keamanan masyarakat. Melindungi data pengguna bukan sekadar tugas, melainkan tanggung jawab moral.
+                        </p>
+                    </div>
+                    
+                    <div class="reveal delay-3">
+                        <div class="w-10 h-10 rounded-full bg-gold/5 border border-gold/10 flex items-center justify-center mb-5">
+                            <span class="font-display text-gold text-lg">III</span>
+                        </div>
+                        <h4 class="font-display text-lg text-cream mb-3">Inovasi Berkelanjutan</h4>
+                        <p class="text-muted text-sm leading-relaxed">
+                            Teknologi bukanlah tujuan akhir, melainkan perjalanan tanpa henti. Dari rxs-code hingga asisten AI untuk Android, setiap proyek adalah batu loncatan menuju masa depan di mana manusia dan mesin berkolaborasi secara harmonis untuk menciptakan dunia yang lebih baik.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
+                <div class="reveal text-center p-6">
+                    <p class="stat-number mb-2">4+</p>
+                    <p class="text-[10px] tracking-[0.3em] uppercase text-muted">Proyek Aktif</p>
+                </div>
+                <div class="reveal delay-1 text-center p-6">
+                    <p class="stat-number mb-2">12</p>
+                    <p class="text-[10px] tracking-[0.3em] uppercase text-muted">AI Provider</p>
+                </div>
+                <div class="reveal delay-2 text-center p-6">
+                    <p class="stat-number mb-2">100%</p>
+                    <p class="text-[10px] tracking-[0.3em] uppercase text-muted">Open Source</p>
+                </div>
+                <div class="reveal delay-3 text-center p-6">
+                    <p class="stat-number mb-2">0</p>
+                    <p class="text-[10px] tracking-[0.3em] uppercase text-muted">Biaya Tersembunyi</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="ornament-divider reveal">
+        <div class="line"></div>
+        <div class="diamond"></div>
+        <div class="line"></div>
+    </div>
 
     <!-- Projects Section -->
-    <section id="proyek" class="relative py-32 px-6 z-10">
+    <section id="proyek" class="relative py-28 px-6 z-10">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-20 reveal">
-                <p class="text-primary text-sm tracking-[0.2em] uppercase mb-4">Portofolio</p>
-                <h2 class="font-display text-4xl md:text-6xl font-light text-white mb-6">Proyek Unggulan</h2>
-                <div class="line-deco mx-auto mb-6"></div>
-                <p class="text-muted max-w-2xl mx-auto">Kumpulan karya yang dirancang untuk memberikan solusi nyata, sepenuhnya open-source, dan dapat dijalankan pada lingkungan pengguna masing-masing.</p>
+                <p class="section-label mb-4">Portofolio</p>
+                <h2 class="section-title text-4xl md:text-6xl text-cream mb-6">Karya Unggulan</h2>
+                <div class="gold-line-center mb-8"></div>
+                <p class="text-muted max-w-2xl mx-auto text-sm leading-relaxed">
+                    Kumpulan karya yang dirancang untuk memberikan solusi nyata dalam kehidupan sehari-hari. 
+                    Sepenuhnya open-source, tanpa biaya tersembunyi, dan dapat dijalankan pada lingkungan pengguna masing-masing.
+                </p>
             </div>
 
             <div class="grid lg:grid-cols-2 gap-8">
                 <!-- rxs-code -->
-                <div class="reveal glow-card rounded-2xl overflow-hidden group stagger-1">
-                    <div class="relative h-64 overflow-hidden bg-surface-elevated">
-                        <img src="https://d.top4top.io/p_3782trw1s0.png" alt="rxs-code" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onload="this.classList.add('loaded')">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                        <div class="absolute top-4 right-4">
-                            <span class="status-released px-3 py-1 rounded-full text-xs font-medium tracking-wider">V0.3.0 RELEASED</span>
+                <div class="reveal lux-card rounded-2xl overflow-hidden group delay-1">
+                    <div class="relative h-72 overflow-hidden bg-surface-raised">
+                        <img src="https://d.top4top.io/p_3782trw1s0.png" alt="rxs-code" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" onload="this.classList.add('loaded')">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                        <div class="absolute top-5 right-5">
+                            <span class="status-badge status-live"><span class="status-dot"></span> v0.3.0 Released</span>
                         </div>
                     </div>
-                    <div class="p-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-display text-2xl text-white">rxs-code</h3>
-                            <a href="https://rxs-code.vercel.app" target="_blank" class="text-primary hover:text-primary-light transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    <div class="p-8 md:p-10">
+                        <div class="flex items-center justify-between mb-5">
+                            <h3 class="font-display text-2xl text-cream">rxs-code</h3>
+                            <a href="https://rxs-code.vercel.app" target="_blank" class="w-10 h-10 rounded-full border border-gold/20 flex items-center justify-center text-gold hover:bg-gold/10 transition-all">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                                 </svg>
                             </a>
                         </div>
-                        <p class="text-muted text-sm leading-relaxed mb-6">
+                        <p class="text-muted text-sm leading-[1.9] mb-6">
                             Antarmuka baris perintah berbasis kecerdasan buatan yang beroperasi sepenuhnya pada Termux. 
                             Mengintegrasikan 12 provider AI utama secara otonom tanpa biaya berlangganan. 
-                            Setiap pengguna menjalankan instance pada lingkungan pribadinya sendiri.
+                            Setiap pengguna menjalankan instance pada lingkungan pribadinya sendiri, menjamin privasi dan kontrol penuh atas data.
                         </p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-primary/5 border border-primary/10 rounded text-xs text-primary/70">CLI</span>
-                            <span class="px-3 py-1 bg-primary/5 border border-primary/10 rounded text-xs text-primary/70">Termux</span>
-                            <span class="px-3 py-1 bg-primary/5 border border-primary/10 rounded text-xs text-primary/70">Open Source</span>
-                            <span class="px-3 py-1 bg-primary/5 border border-primary/10 rounded text-xs text-primary/70">12 Provider</span>
+                        <div class="flex flex-wrap gap-2 mb-8">
+                            <span class="px-4 py-1.5 bg-gold/5 border border-gold/10 rounded-full text-[11px] text-gold/70 tracking-wider">CLI</span>
+                            <span class="px-4 py-1.5 bg-gold/5 border border-gold/10 rounded-full text-[11px] text-gold/70 tracking-wider">Termux</span>
+                            <span class="px-4 py-1.5 bg-gold/5 border border-gold/10 rounded-full text-[11px] text-gold/70 tracking-wider">Open Source</span>
+                            <span class="px-4 py-1.5 bg-gold/5 border border-gold/10 rounded-full text-[11px] text-gold/70 tracking-wider">12 Provider</span>
                         </div>
-                        <div class="mt-6 pt-6 border-t border-white/5">
-                            <a href="https://rxs-code.vercel.app" target="_blank" class="inline-flex items-center gap-2 text-sm text-primary hover:text-white transition-colors group/link">
-                                <span>Lihat Dokumentasi</span>
-                                <svg class="w-4 h-4 transition-transform group-hover/link:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                                </svg>
-                            </a>
-                        </div>
+                        <a href="https://rxs-code.vercel.app" target="_blank" class="inline-flex items-center gap-3 text-sm text-gold hover:text-cream transition-colors group/link">
+                            <span class="tracking-wide">Lihat Dokumentasi</span>
+                            <svg class="w-4 h-4 transition-transform group-hover/link:translate-x-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                            </svg>
+                        </a>
                     </div>
                 </div>
 
                 <!-- Anti Virus -->
-                <div class="reveal glow-card rounded-2xl overflow-hidden group stagger-2">
-                    <div class="relative h-64 overflow-hidden bg-surface-elevated">
-                        <img src="https://a.top4top.io/p_3782b8gyf0.png" alt="Anti Virus" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onload="this.classList.add('loaded')">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                        <div class="absolute top-4 right-4">
-                            <span class="status-unreleased px-3 py-1 rounded-full text-xs font-medium tracking-wider">UNRELEASED</span>
+                <div class="reveal lux-card rounded-2xl overflow-hidden group delay-2">
+                    <div class="relative h-72 overflow-hidden bg-surface-raised">
+                        <img src="https://a.top4top.io/p_3782b8gyf0.png" alt="Anti Virus" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" onload="this.classList.add('loaded')">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                        <div class="absolute top-5 right-5">
+                            <span class="status-badge status-soon">Unreleased</span>
                         </div>
                     </div>
-                    <div class="p-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-display text-2xl text-white">Aplikasi Antivirus</h3>
-                            <div class="w-8 h-8 rounded-full bg-muted/10 flex items-center justify-center">
-                                <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    <div class="p-8 md:p-10">
+                        <div class="flex items-center justify-between mb-5">
+                            <h3 class="font-display text-2xl text-cream">Aplikasi Antivirus</h3>
+                            <div class="w-10 h-10 rounded-full border border-muted/10 flex items-center justify-center text-muted">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                                 </svg>
                             </div>
                         </div>
-                        <p class="text-muted text-sm leading-relaxed mb-6">
+                        <p class="text-muted text-sm leading-[1.9] mb-6">
                             Aplikasi Android untuk menganalisis dan mendiagnosis potensi ancaman pada berkas. 
-                            Dirancang sebagai respons terhadap kurangnya kesadaran pengguna akan risiko keamanan digital. 
-                            Sistem secara otomatis memeriksa kerangka berkas, mengevaluasi potensi ancaman, 
-                            serta menghapus berkas yang terindikasi berbahaya.
+                            Dirancang sebagai respons terhadap kurangnya kesadaran pengguna akan risiko keamanan digital di era modern. 
+                            Sistem secara otomatis memeriksa kerangka berkas, mengevaluasi potensi ancaman, serta menghapus berkas yang terindikasi berbahaya tanpa intervensi manual.
                         </p>
                         <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-primary/5 border border-primary/10 rounded text-xs text-primary/70">Android</span>
-                            <span class="px-3 py-1 bg-primary/5 border border-primary/10 rounded text-xs text-primary/70">Security</span>
-                            <span class="px-3 py-1 bg-primary/5 border border-primary/10 rounded text-xs text-primary/70">Open Source</span>
+                            <span class="px-4 py-1.5 bg-gold/5 border border-gold/10 rounded-full text-[11px] text-gold/70 tracking-wider">Android</span>
+                            <span class="px-4 py-1.5 bg-gold/5 border border-gold/10 rounded-full text-[11px] text-gold/70 tracking-wider">Security</span>
+                            <span class="px-4 py-1.5 bg-gold/5 border border-gold/10 rounded-full text-[11px] text-gold/70 tracking-wider">Open Source</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- AI on Android -->
-                <div class="reveal glow-card rounded-2xl overflow-hidden group stagger-3">
-                    <div class="relative h-64 overflow-hidden bg-surface-elevated flex items-center justify-center">
-                        <div class="w-32 h-32 rounded-full bg-primary/5 border border-primary/20 flex items-center justify-center">
-                            <svg class="w-16 h-16 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                <div class="reveal lux-card rounded-2xl overflow-hidden group delay-3">
+                    <div class="relative h-72 overflow-hidden bg-surface-raised flex items-center justify-center">
+                        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,165,116,0.03),transparent)]"></div>
+                        <div class="w-40 h-40 rounded-full border border-gold/10 flex items-center justify-center relative">
+                            <div class="absolute inset-0 rounded-full border border-gold/5 animate-ping" style="animation-duration:3s"></div>
+                            <svg class="w-16 h-16 text-gold/30" fill="none" stroke="currentColor" stroke-width="0.8" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
                         </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                        <div class="absolute top-4 right-4">
-                            <span class="status-unreleased px-3 py-1 rounded-full text-xs font-medium tracking-wider">UNRELEASED</span>
+                        <div class="absolute top-5 right-5">
+                            <span class="status-badge status-soon">Unreleased</span>
                         </div>
                     </div>
-                    <div class="p-8">
-                        <h3 class="font-display text-2xl text-white mb-4">AI on Your Android</h3>
-                        <p class="text-muted text-sm leading-relaxed mb-6">
+                    <div class="p-8 md:p-10">
+                        <h3 class="font-display text-2xl text-cream mb-5">AI on Your Android</h3>
+                        <p class="text-muted text-sm leading-[1.9] mb-6">
                             Asisten kecerdasan buatan untuk perangkat Android yang beroperasi sesuai instruksi pengguna. 
-                            Terinspirasi oleh konsep asisten pintar dalam fiksi ilmiah, aplikasi ini dikembangkan 
-                            dengan arsitektur canggih yang memerlukan waktu pengembangan ekstensif untuk memastikan 
-                            kualitas dan keandalan optimal.
+                            Terinspirasi oleh konsep asisten pintar dalam fiksi ilmiah, aplikasi ini dikembangkan dengan arsitektur canggih 
+                            yang memerlukan waktu pengembangan ekstensif untuk memastikan kualitas, keandalan, dan pengalaman pengguna yang optimal.
                         </p>
                         <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-primary/5 border border-primary/10 rounded text-xs text-primary/70">AI Assistant</span>
-                            <span class="px-3 py-1 bg-primary/5 border border-primary/10 rounded text-xs text-primary/70">Android</span>
-                            <span class="px-3 py-1 bg-primary/5 border border-primary/10 rounded text-xs text-primary/70">Voice Command</span>
+                            <span class="px-4 py-1.5 bg-gold/5 border border-gold/10 rounded-full text-[11px] text-gold/70 tracking-wider">AI Assistant</span>
+                            <span class="px-4 py-1.5 bg-gold/5 border border-gold/10 rounded-full text-[11px] text-gold/70 tracking-wider">Android</span>
+                            <span class="px-4 py-1.5 bg-gold/5 border border-gold/10 rounded-full text-[11px] text-gold/70 tracking-wider">Voice Command</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Book -->
-                <div class="reveal glow-card rounded-2xl overflow-hidden group stagger-4">
-                    <div class="relative h-64 overflow-hidden bg-surface-elevated flex items-center justify-center">
-                        <div class="w-32 h-32 rounded-full bg-primary/5 border border-primary/20 flex items-center justify-center">
-                            <svg class="w-16 h-16 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                <div class="reveal lux-card rounded-2xl overflow-hidden group delay-4">
+                    <div class="relative h-72 overflow-hidden bg-surface-raised flex items-center justify-center">
+                        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,165,116,0.03),transparent)]"></div>
+                        <div class="w-40 h-40 rounded-full border border-gold/10 flex items-center justify-center">
+                            <svg class="w-16 h-16 text-gold/30" fill="none" stroke="currentColor" stroke-width="0.8" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                             </svg>
                         </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                        <div class="absolute top-4 right-4">
-                            <span class="status-released px-3 py-1 rounded-full text-xs font-medium tracking-wider">RELEASED</span>
+                        <div class="absolute top-5 right-5">
+                            <span class="status-badge status-live"><span class="status-dot"></span> Released</span>
                         </div>
                     </div>
-                    <div class="p-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-display text-2xl text-white">Dokumentasi Pembelajaran Pemrograman</h3>
-                            <a href="https://github.com/rixz-dev/Belajar-js-and-python-by-riz.-Made-it-with-claude-ai" target="_blank" class="text-primary hover:text-primary-light transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    <div class="p-8 md:p-10">
+                        <div class="flex items-center justify-between mb-5">
+                            <h3 class="font-display text-2xl text-cream">Dokumentasi Pembelajaran</h3>
+                            <a href="https://github.com/rixz-dev/Belajar-js-and-python-by-riz.-Made-it-with-claude-ai" target="_blank" class="w-10 h-10 rounded-full border border-gold/20 flex items-center justify-center text-gold hover:bg-gold/10 transition-all">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                                 </svg>
                             </a>
                         </div>
-                        <p class="text-muted text-sm leading-relaxed mb-6">
+                        <p class="text-muted text-sm leading-[1.9] mb-6">
                             Kumpulan dokumen edukatif untuk pembelajaran pemrograman JavaScript dan Python secara mandiri. 
-                            Materi disusun secara sistematis dan tersedia secara gratis untuk komunitas pengembang.
+                            Materi disusun secara sistematis dengan pendekatan praktis, cocok untuk pemula maupun pengembang yang ingin memperdalam pemahaman. 
+                            Tersedia secara gratis untuk komunitas pengembang sebagai bentuk kontribusi terhadap ekosistem teknologi terbuka.
                         </p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-primary/5 border border-primary/10 rounded text-xs text-primary/70">Education</span>
-                            <span class="px-3 py-1 bg-primary/5 border border-primary/10 rounded text-xs text-primary/70">JavaScript</span>
-                            <span class="px-3 py-1 bg-primary/5 border border-primary/10 rounded text-xs text-primary/70">Python</span>
-                            <span class="px-3 py-1 bg-primary/5 border border-primary/10 rounded text-xs text-primary/70">Open Source</span>
+                        <div class="flex flex-wrap gap-2 mb-8">
+                            <span class="px-4 py-1.5 bg-gold/5 border border-gold/10 rounded-full text-[11px] text-gold/70 tracking-wider">Education</span>
+                            <span class="px-4 py-1.5 bg-gold/5 border border-gold/10 rounded-full text-[11px] text-gold/70 tracking-wider">JavaScript</span>
+                            <span class="px-4 py-1.5 bg-gold/5 border border-gold/10 rounded-full text-[11px] text-gold/70 tracking-wider">Python</span>
                         </div>
-                        <div class="mt-6 pt-6 border-t border-white/5">
-                            <a href="https://github.com/rixz-dev/Belajar-js-and-python-by-riz.-Made-it-with-claude-ai" target="_blank" class="inline-flex items-center gap-2 text-sm text-primary hover:text-white transition-colors group/link">
-                                <span>Akses Dokumentasi</span>
-                                <svg class="w-4 h-4 transition-transform group-hover/link:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                                </svg>
-                            </a>
-                        </div>
+                        <a href="https://github.com/rixz-dev/Belajar-js-and-python-by-riz.-Made-it-with-claude-ai" target="_blank" class="inline-flex items-center gap-3 text-sm text-gold hover:text-cream transition-colors group/link">
+                            <span class="tracking-wide">Akses Dokumentasi</span>
+                            <svg class="w-4 h-4 transition-transform group-hover/link:translate-x-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                            </svg>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="section-divider reveal"></div>
+    <div class="ornament-divider reveal">
+        <div class="line"></div>
+        <div class="diamond"></div>
+        <div class="line"></div>
+    </div>
 
     <!-- Providers Section -->
-    <section id="provider" class="relative py-32 px-6 z-10">
+    <section id="provider" class="relative py-28 px-6 z-10">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-20 reveal">
-                <p class="text-primary text-sm tracking-[0.2em] uppercase mb-4">Integrasi</p>
-                <h2 class="font-display text-4xl md:text-5xl font-light text-white mb-6">Provider AI Terintegrasi</h2>
-                <div class="line-deco mx-auto mb-6"></div>
-                <p class="text-muted max-w-xl mx-auto">rxs-code mengintegrasikan berbagai provider AI terkemuka untuk memberikan fleksibilitas dan performa optimal.</p>
+                <p class="section-label mb-4">Integrasi</p>
+                <h2 class="section-title text-4xl md:text-5xl text-cream mb-6">Provider AI Terintegrasi</h2>
+                <div class="gold-line-center mb-8"></div>
+                <p class="text-muted max-w-xl mx-auto text-sm leading-relaxed">
+                    rxs-code mengintegrasikan berbagai provider AI terkemuka untuk memberikan fleksibilitas, redundansi, dan performa optimal bagi setiap pengguna.
+                </p>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <!-- OpenRouter -->
-                <div class="reveal provider-card rounded-xl p-6 flex flex-col items-center justify-center gap-3 aspect-square tooltip" data-tip="OpenRouter">
-                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="1.5">
+                <div class="reveal provider-item rounded-2xl p-6 flex flex-col items-center justify-center gap-4 aspect-square tip" data-label="OpenRouter">
+                    <svg class="w-10 h-10 text-gold/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
                         <rect x="2" y="6" width="20" height="12" rx="2"/>
                         <path d="M6 10h.01M6 14h.01M10 10h4M10 14h4M18 10h.01M18 14h.01"/>
-                        <circle cx="12" cy="6" r="1" fill="#FF6B35"/>
+                        <circle cx="12" cy="6" r="1" fill="currentColor"/>
                     </svg>
-                    <span class="text-xs text-muted">OpenRouter</span>
+                    <span class="text-[11px] text-muted tracking-wider">OpenRouter</span>
                 </div>
 
-                <!-- NVIDIA -->
-                <div class="reveal provider-card rounded-xl p-6 flex flex-col items-center justify-center gap-3 aspect-square tooltip" data-tip="NVIDIA">
-                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="#FF6B35"/>
-                        <path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" fill="#FF6B35" opacity="0.6"/>
-                        <circle cx="12" cy="12" r="2" fill="#FF6B35"/>
+                <div class="reveal delay-1 provider-item rounded-2xl p-6 flex flex-col items-center justify-center gap-4 aspect-square tip" data-label="NVIDIA">
+                    <svg class="w-10 h-10 text-gold/60" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" opacity="0.6"/>
+                        <circle cx="12" cy="12" r="2" opacity="0.8"/>
                     </svg>
-                    <span class="text-xs text-muted">NVIDIA</span>
+                    <span class="text-[11px] text-muted tracking-wider">NVIDIA</span>
                 </div>
 
-                <!-- xAI -->
-                <div class="reveal provider-card rounded-xl p-6 flex flex-col items-center justify-center gap-3 aspect-square tooltip" data-tip="xAI">
-                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="2">
+                <div class="reveal delay-2 provider-item rounded-2xl p-6 flex flex-col items-center justify-center gap-4 aspect-square tip" data-label="xAI">
+                    <svg class="w-10 h-10 text-gold/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M18 6L6 18M6 6l12 12"/>
                     </svg>
-                    <span class="text-xs text-muted">xAI</span>
+                    <span class="text-[11px] text-muted tracking-wider">xAI</span>
                 </div>
 
-                <!-- Groq -->
-                <div class="reveal provider-card rounded-xl p-6 flex flex-col items-center justify-center gap-3 aspect-square tooltip" data-tip="Groq">
-                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="1.5">
+                <div class="reveal provider-item rounded-2xl p-6 flex flex-col items-center justify-center gap-4 aspect-square tip" data-label="Groq">
+                    <svg class="w-10 h-10 text-gold/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
                     </svg>
-                    <span class="text-xs text-muted">Groq</span>
+                    <span class="text-[11px] text-muted tracking-wider">Groq</span>
                 </div>
 
-                <!-- Cerebras -->
-                <div class="reveal provider-card rounded-xl p-6 flex flex-col items-center justify-center gap-3 aspect-square tooltip" data-tip="Cerebras">
-                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="1.5">
-                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c1.5 0 3-.3 4.3-1"/>
-                        <path d="M12 6c-3.3 0-6 2.7-6 6s2.7 6 6 6"/>
-                        <circle cx="12" cy="12" r="2" fill="#FF6B35"/>
+                <div class="reveal delay-1 provider-item rounded-2xl p-6 flex flex-col items-center justify-center gap-4 aspect-square tip" data-label="Cerebras">
+                    <svg class="w-10 h-10 text-gold/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="9"/>
+                        <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5"/>
+                        <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
                     </svg>
-                    <span class="text-xs text-muted">Cerebras</span>
+                    <span class="text-[11px] text-muted tracking-wider">Cerebras</span>
                 </div>
 
-                <!-- MiniMax -->
-                <div class="reveal provider-card rounded-xl p-6 flex flex-col items-center justify-center gap-3 aspect-square tooltip" data-tip="MiniMax">
-                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="2">
+                <div class="reveal delay-2 provider-item rounded-2xl p-6 flex flex-col items-center justify-center gap-4 aspect-square tip" data-label="MiniMax">
+                    <svg class="w-10 h-10 text-gold/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 20V4l8 8 8-8v16"/>
                     </svg>
-                    <span class="text-xs text-muted">MiniMax</span>
+                    <span class="text-[11px] text-muted tracking-wider">MiniMax</span>
                 </div>
 
-                <!-- Kimi -->
-                <div class="reveal provider-card rounded-xl p-6 flex flex-col items-center justify-center gap-3 aspect-square tooltip" data-tip="Kimi">
-                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="1.5">
+                <div class="reveal provider-item rounded-2xl p-6 flex flex-col items-center justify-center gap-4 aspect-square tip" data-label="Kimi">
+                    <svg class="w-10 h-10 text-gold/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9z"/>
-                        <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5"/>
-                        <circle cx="12" cy="12" r="1.5" fill="#FF6B35"/>
+                        <circle cx="12" cy="12" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="text-xs text-muted">Kimi</span>
+                    <span class="text-[11px] text-muted tracking-wider">Kimi</span>
                 </div>
 
-                <!-- Qwen -->
-                <div class="reveal provider-card rounded-xl p-6 flex flex-col items-center justify-center gap-3 aspect-square tooltip" data-tip="Qwen">
-                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="2">
+                <div class="reveal delay-1 provider-item rounded-2xl p-6 flex flex-col items-center justify-center gap-4 aspect-square tip" data-label="Qwen">
+                    <svg class="w-10 h-10 text-gold/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <circle cx="12" cy="12" r="9"/>
                         <path d="M8 12h8M12 8v8"/>
-                        <path d="M12 12l-3-3M12 12l3-3M12 12l-3 3M12 12l3 3" stroke-width="1"/>
                     </svg>
-                    <span class="text-xs text-muted">Qwen</span>
+                    <span class="text-[11px] text-muted tracking-wider">Qwen</span>
                 </div>
 
-                <!-- Together AI -->
-                <div class="reveal provider-card rounded-xl p-6 flex flex-col items-center justify-center gap-3 aspect-square tooltip" data-tip="Together AI">
-                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="1.5">
+                <div class="reveal delay-2 provider-item rounded-2xl p-6 flex flex-col items-center justify-center gap-4 aspect-square tip" data-label="Together AI">
+                    <svg class="w-10 h-10 text-gold/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <circle cx="8" cy="12" r="3"/>
                         <circle cx="16" cy="8" r="2"/>
                         <circle cx="16" cy="16" r="2"/>
                         <path d="M11 10.5l3.5-1.5M11 13.5l3.5 1.5"/>
                     </svg>
-                    <span class="text-xs text-muted">Together</span>
+                    <span class="text-[11px] text-muted tracking-wider">Together</span>
                 </div>
 
-                <!-- Gemini -->
-                <div class="reveal provider-card rounded-xl p-6 flex flex-col items-center justify-center gap-3 aspect-square tooltip" data-tip="Gemini">
-                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="1.5">
+                <div class="reveal provider-item rounded-2xl p-6 flex flex-col items-center justify-center gap-4 aspect-square tip" data-label="Gemini">
+                    <svg class="w-10 h-10 text-gold/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/>
                     </svg>
-                    <span class="text-xs text-muted">Gemini</span>
+                    <span class="text-[11px] text-muted tracking-wider">Gemini</span>
                 </div>
 
-                <!-- Tavily -->
-                <div class="reveal provider-card rounded-xl p-6 flex flex-col items-center justify-center gap-3 aspect-square tooltip" data-tip="Tavily">
-                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="1.5">
+                <div class="reveal delay-1 provider-item rounded-2xl p-6 flex flex-col items-center justify-center gap-4 aspect-square tip" data-label="Tavily">
+                    <svg class="w-10 h-10 text-gold/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <circle cx="11" cy="11" r="7"/>
                         <path d="M20 20l-3.5-3.5"/>
                         <path d="M11 8v6M8 11h6"/>
                     </svg>
-                    <span class="text-xs text-muted">Tavily</span>
+                    <span class="text-[11px] text-muted tracking-wider">Tavily</span>
                 </div>
 
-                <!-- MCP -->
-                <div class="reveal provider-card rounded-xl p-6 flex flex-col items-center justify-center gap-3 aspect-square tooltip" data-tip="MCP">
-                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="1.5">
+                <div class="reveal delay-2 provider-item rounded-2xl p-6 flex flex-col items-center justify-center gap-4 aspect-square tip" data-label="MCP">
+                    <svg class="w-10 h-10 text-gold/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <rect x="4" y="4" width="16" height="16" rx="2"/>
                         <path d="M4 12h16M12 4v16"/>
-                        <circle cx="12" cy="12" r="2" fill="#FF6B35"/>
+                        <circle cx="12" cy="12" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="text-xs text-muted">MCP</span>
+                    <span class="text-[11px] text-muted tracking-wider">MCP</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="section-divider reveal"></div>
+    <div class="ornament-divider reveal">
+        <div class="line"></div>
+        <div class="diamond"></div>
+        <div class="line"></div>
+    </div>
 
     <!-- Dev Connection -->
-    <section id="koneksi" class="relative py-32 px-6 z-10">
+    <section id="koneksi" class="relative py-28 px-6 z-10">
         <div class="max-w-5xl mx-auto">
             <div class="text-center mb-20 reveal">
-                <p class="text-primary text-sm tracking-[0.2em] uppercase mb-4">Terhubung</p>
-                <h2 class="font-display text-4xl md:text-5xl font-light text-white mb-6">Jaringan Pengembang</h2>
-                <div class="line-deco mx-auto mb-6"></div>
+                <p class="section-label mb-4">Terhubung</p>
+                <h2 class="section-title text-4xl md:text-5xl text-cream mb-6">Jaringan Pengembang</h2>
+                <div class="gold-line-center mb-8"></div>
+                <p class="text-muted max-w-lg mx-auto text-sm leading-relaxed">
+                    Mari berkolaborasi, berdiskusi, dan berkembang bersama dalam ekosistem teknologi terbuka.
+                </p>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- GitHub -->
-                <a href="https://github.com/rixz-dev" target="_blank" class="reveal glow-card rounded-xl p-8 flex flex-col items-center gap-4 group hover:border-primary/40 transition-all">
-                    <div class="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                        <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+                <a href="https://github.com/rixz-dev" target="_blank" class="reveal conn-card rounded-2xl p-8 flex flex-col items-center gap-5 group">
+                    <div class="w-16 h-16 rounded-2xl bg-cream/5 border border-gold/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        <svg class="w-7 h-7 text-cream" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                         </svg>
                     </div>
                     <div class="text-center">
-                        <h3 class="font-display text-lg text-white mb-1">GitHub</h3>
-                        <p class="text-xs text-muted">@rixz-dev</p>
+                        <h3 class="font-display text-lg text-cream mb-1">GitHub</h3>
+                        <p class="text-[11px] text-muted tracking-wider">@rixz-dev</p>
                     </div>
                 </a>
 
-                <!-- Telegram -->
-                <a href="https://t.me/rixzdev" target="_blank" class="reveal glow-card rounded-xl p-8 flex flex-col items-center gap-4 group hover:border-primary/40 transition-all stagger-1">
-                    <div class="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                        <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <a href="https://t.me/rixzdev" target="_blank" class="reveal delay-1 conn-card rounded-2xl p-8 flex flex-col items-center gap-5 group">
+                    <div class="w-16 h-16 rounded-2xl bg-cream/5 border border-gold/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        <svg class="w-7 h-7 text-cream" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
                         </svg>
                     </div>
                     <div class="text-center">
-                        <h3 class="font-display text-lg text-white mb-1">Telegram</h3>
-                        <p class="text-xs text-muted">@rixzdev</p>
+                        <h3 class="font-display text-lg text-cream mb-1">Telegram</h3>
+                        <p class="text-[11px] text-muted tracking-wider">@rixzdev</p>
                     </div>
                 </a>
 
-                <!-- WhatsApp -->
-                <a href="https://whatsapp.com/channel/0029Vb6yA26Jpe8d9lQUSt24" target="_blank" class="reveal glow-card rounded-xl p-8 flex flex-col items-center gap-4 group hover:border-primary/40 transition-all stagger-2">
-                    <div class="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                        <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <a href="https://whatsapp.com/channel/0029Vb6yA26Jpe8d9lQUSt24" target="_blank" class="reveal delay-2 conn-card rounded-2xl p-8 flex flex-col items-center gap-5 group">
+                    <div class="w-16 h-16 rounded-2xl bg-cream/5 border border-gold/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        <svg class="w-7 h-7 text-cream" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                         </svg>
                     </div>
                     <div class="text-center">
-                        <h3 class="font-display text-lg text-white mb-1">WhatsApp</h3>
-                        <p class="text-xs text-muted">Channel</p>
+                        <h3 class="font-display text-lg text-cream mb-1">WhatsApp</h3>
+                        <p class="text-[11px] text-muted tracking-wider">Channel</p>
                     </div>
                 </a>
 
-                <!-- Saweria -->
-                <a href="https://saweria.co/riznotdev" target="_blank" class="reveal glow-card rounded-xl p-8 flex flex-col items-center gap-4 group hover:border-primary/40 transition-all stagger-3">
-                    <div class="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                        <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                <a href="https://saweria.co/riznotdev" target="_blank" class="reveal delay-3 conn-card rounded-2xl p-8 flex flex-col items-center gap-5 group">
+                    <div class="w-16 h-16 rounded-2xl bg-cream/5 border border-gold/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        <svg class="w-7 h-7 text-cream" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                         </svg>
                     </div>
                     <div class="text-center">
-                        <h3 class="font-display text-lg text-white mb-1">Saweria</h3>
-                        <p class="text-xs text-muted">Dukungan</p>
+                        <h3 class="font-display text-lg text-cream mb-1">Saweria</h3>
+                        <p class="text-[11px] text-muted tracking-wider">Dukungan</p>
                     </div>
                 </a>
             </div>
 
             <div class="mt-16 text-center reveal">
-                <p class="text-muted text-sm mb-4">Atau kunjungi repositori utama untuk melihat seluruh proyek</p>
-                <a href="https://github.com/rixz-dev" target="_blank" class="btn-primary inline-flex items-center gap-2">
+                <p class="text-muted text-sm mb-6">Atau kunjungi repositori utama untuk melihat seluruh proyek</p>
+                <a href="https://github.com/rixz-dev" target="_blank" class="btn-lux">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                     </svg>
                     <span>github.com/rixz-dev</span>
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Footer Marquee -->
-    <footer class="relative z-10 border-t border-white/5 bg-black/50 backdrop-blur-sm">
-        <div class="py-4 marquee-container">
-            <div class="marquee-content">
-                <span class="inline-flex items-center gap-8 px-4 text-sm text-muted font-display tracking-wider">
-                    <span class="text-primary">RxsGpt</span> • 
-                    <span>Aners Aria</span> • 
-                    <span class="text-primary">rxs-code</span> • 
-                    <span>Anti Virus</span> • 
-                    <span class="text-primary">AI on your Android</span> • 
-                    <span>OSN</span> • 
-                    <span class="text-primary">RxsGpt</span> • 
-                    <span>Aners Aria</span> • 
-                    <span class="text-primary">rxs-code</span> • 
-                    <span>Anti Virus</span> • 
-                    <span class="text-primary">AI on your Android</span> • 
-                    <span>OSN</span> •
-                </span>
-                <span class="inline-flex items-center gap-8 px-4 text-sm text-muted font-display tracking-wider">
-                    <span class="text-primary">RxsGpt</span> • 
-                    <span>Aners Aria</span> • 
-                    <span class="text-primary">rxs-code</span> • 
-                    <span>Anti Virus</span> • 
-                    <span class="text-primary">AI on your Android</span> • 
-                    <span>OSN</span> • 
-                    <span class="text-primary">RxsGpt</span> • 
-                    <span>Aners Aria</span> • 
-                    <span class="text-primary">rxs-code</span> • 
-                    <span>Anti Virus</span> • 
-                    <span class="text-primary">AI on your Android</span> • 
-                    <span>OSN</span> •
-                </span>
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-gold/5 bg-black/40 backdrop-blur-md">
+        <div class="py-5 overflow-hidden">
+            <div class="marquee-track">
+                <div class="flex items-center gap-12 px-6 text-sm font-display text-muted/40 tracking-widest whitespace-nowrap">
+                    <span class="text-gold/50">RxsGpt</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span>Aners Aria</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span class="text-gold/50">rxs-code</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span>Anti Virus</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span class="text-gold/50">AI on your Android</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span>OSN</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span class="text-gold/50">RxsGpt</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span>Aners Aria</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span class="text-gold/50">rxs-code</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span>Anti Virus</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span class="text-gold/50">AI on your Android</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span>OSN</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                </div>
+                <div class="flex items-center gap-12 px-6 text-sm font-display text-muted/40 tracking-widest whitespace-nowrap">
+                    <span class="text-gold/50">RxsGpt</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span>Aners Aria</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span class="text-gold/50">rxs-code</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span>Anti Virus</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span class="text-gold/50">AI on your Android</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span>OSN</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span class="text-gold/50">RxsGpt</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span>Aners Aria</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span class="text-gold/50">rxs-code</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span>Anti Virus</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span class="text-gold/50">AI on your Android</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                    <span>OSN</span>
+                    <span class="text-[8px] text-gold/20">◆</span>
+                </div>
             </div>
         </div>
-        <div class="py-8 text-center border-t border-white/5">
-            <p class="text-xs text-muted/60 tracking-widest uppercase">
+        <div class="py-8 text-center border-t border-gold/5">
+            <p class="text-[10px] text-muted/40 tracking-[0.4em] uppercase">
                 Licensed under GPL v3.0 — &copy; Riz-Dev 2026
             </p>
         </div>
     </footer>
 
     <script>
-        // Particle Background
+        // Loading Screen with Medieval Quotes
+        const quotes = [
+            { text: "The only way to do great work is to love what you do.", author: "Medieval Proverb" },
+            { text: "He who has a why to live can bear almost any how.", author: "Ancient Wisdom" },
+            { text: "In the middle of difficulty lies opportunity.", author: "Old Scripture" },
+            { text: "Knowledge is the pathway from darkness to light.", author: "Scholar's Creed" },
+            { text: "The code is a mirror reflecting the mind of its creator.", author: "Monk's Manuscript" },
+            { text: "To build is human, to create is divine.", author: "Cathedral Architect" }
+        ];
+        
+        let quoteIndex = 0;
+        const quoteEl = document.getElementById('loaderQuote');
+        const authorEl = document.getElementById('loaderAuthor');
+        const loader = document.getElementById('loader');
+        
+        function cycleQuotes() {
+            if (quoteIndex < quotes.length) {
+                quoteEl.style.animation = 'none';
+                authorEl.style.animation = 'none';
+                setTimeout(() => {
+                    quoteEl.textContent = `"${quotes[quoteIndex].text}"`;
+                    authorEl.textContent = `— ${quotes[quoteIndex].author}`;
+                    quoteEl.style.animation = '';
+                    authorEl.style.animation = '';
+                    quoteIndex++;
+                    setTimeout(cycleQuotes, 3500);
+                }, 50);
+            }
+        }
+        cycleQuotes();
+        
+        setTimeout(() => {
+            loader.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }, 5500);
+        
+        document.body.style.overflow = 'hidden';
+        
+        // Particle Canvas
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -899,10 +1289,10 @@
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2 + 0.5;
-                this.speedX = Math.random() * 0.5 - 0.25;
-                this.speedY = Math.random() * 0.5 - 0.25;
-                this.opacity = Math.random() * 0.5 + 0.1;
+                this.size = Math.random() * 1.5 + 0.3;
+                this.speedX = Math.random() * 0.3 - 0.15;
+                this.speedY = Math.random() * 0.3 - 0.15;
+                this.opacity = Math.random() * 0.4 + 0.1;
             }
             update() {
                 this.x += this.speedX;
@@ -913,7 +1303,7 @@
                 if (this.y < 0) this.y = canvas.height;
             }
             draw() {
-                ctx.fillStyle = `rgba(255, 107, 53, ${this.opacity})`;
+                ctx.fillStyle = `rgba(212, 165, 116, ${this.opacity})`;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
@@ -922,29 +1312,23 @@
         
         function initParticles() {
             particles = [];
-            const count = Math.min(window.innerWidth / 10, 100);
-            for (let i = 0; i < count; i++) {
-                particles.push(new Particle());
-            }
+            const count = Math.min(window.innerWidth / 12, 80);
+            for (let i = 0; i < count; i++) particles.push(new Particle());
         }
         initParticles();
         
         function animateParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            particles.forEach(p => { p.update(); p.draw(); });
             
-            // Connect nearby particles
             for (let i = 0; i < particles.length; i++) {
                 for (let j = i + 1; j < particles.length; j++) {
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < 100) {
-                        ctx.strokeStyle = `rgba(255, 107, 53, ${0.1 * (1 - distance / 100)})`;
-                        ctx.lineWidth = 0.5;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 120) {
+                        ctx.strokeStyle = `rgba(212, 165, 116, ${0.08 * (1 - dist/120)})`;
+                        ctx.lineWidth = 0.4;
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
@@ -956,63 +1340,41 @@
         }
         animateParticles();
         
-        // Intersection Observer for Reveal Animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        
+        // Intersection Observer
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
+                if (entry.isIntersecting) entry.target.classList.add('active');
             });
-        }, observerOptions);
+        }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
         
-        document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => {
-            observer.observe(el);
-        });
+        document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => observer.observe(el));
         
-        // Mouse follow glow effect on cards
-        document.querySelectorAll('.glow-card').forEach(card => {
+        // Mouse glow
+        document.querySelectorAll('.mouse-glow').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / rect.width) * 100;
-                const y = ((e.clientY - rect.top) / rect.height) * 100;
-                card.style.setProperty('--mouse-x', `${x}%`);
-                card.style.setProperty('--mouse-y', `${y}%`);
+                card.style.setProperty('--mouse-x', `${((e.clientX - rect.left) / rect.width) * 100}%`);
+                card.style.setProperty('--mouse-y', `${((e.clientY - rect.top) / rect.height) * 100}%`);
             });
         });
         
-        // Navbar scroll effect
-        let lastScroll = 0;
+        // Navbar
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
-            const currentScroll = window.pageYOffset;
-            if (currentScroll > 100) {
-                navbar.style.background = 'rgba(0, 0, 0, 0.9)';
-            } else {
-                navbar.style.background = 'rgba(0, 0, 0, 0.7)';
-            }
-            lastScroll = currentScroll;
+            navbar.style.background = window.pageYOffset > 80 ? 'rgba(3, 3, 3, 0.85)' : 'rgba(3, 3, 3, 0.6)';
         });
         
-        // Smooth scroll for anchor links
+        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
         
-        // Image load handler
-        document.querySelectorAll('img').forEach(img => {
-            if (img.complete) img.classList.add('loaded');
-        });
+        // Image load
+        document.querySelectorAll('img').forEach(img => { if (img.complete) img.classList.add('loaded'); });
     </script>
 </body>
 </html>
