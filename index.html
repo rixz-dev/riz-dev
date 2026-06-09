@@ -1,15 +1,587 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>reiz_riz — Software Developer & AI Engineer</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>reiz_riz | Farizy — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* === RESET & BASE === */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;background:#0a0a0a;color:#f5f5f5}
+::selection{background:#ff5e00;color:#000}
+
+/* === CSS NOISE TEXTURE OVERLAY === */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  pointer-events:none;
+  opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat:repeat;
+  background-size:256px 256px;
+}
+
+/* === KINETIC ORANGE GRADIENT BACKGROUND === */
+.bg-kinetic{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(255,94,0,.25) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(255,60,0,.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(255,120,0,.15) 0%, transparent 60%),
+    linear-gradient(180deg,#0a0a0a 0%,#111 50%,#0a0a0a 100%);
+  animation:kineticShift 12s ease-in-out infinite alternate;
+}
+@keyframes kineticShift{
+  0%{background-position:0% 0%,100% 100%,50% 50%,0% 0%;filter:hue-rotate(-10deg)}
+  100%{background-position:100% 100%,0% 0%,50% 50%,0% 0%;filter:hue-rotate(10deg)}
+}
+
+/* === SLIDE SYSTEM === */
+#viewport{
+  height:100vh;
+  width:100vw;
+  overflow:hidden;
+  position:relative;
+}
+#track{
+  display:flex;
+  flex-direction:column;
+  transition:transform .9s cubic-bezier(.22,1,.36,1);
+  will-change:transform;
+}
+.slide{
+  height:100vh;
+  width:100vw;
+  flex-shrink:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:clamp(1.5rem,5vw,4rem);
+  position:relative;
+  overflow:hidden;
+}
+
+/* === BORDERS (TACTILE BRUTALISM) === */
+.slide::after{
+  content:"";
+  position:absolute;
+  bottom:0;
+  left:5vw;
+  right:5vw;
+  height:1px;
+  background:rgba(255,94,0,.4);
+}
+
+/* === TYPOGRAPHY ARCHITECTURE === */
+h1,h2,h3{font-weight:700;line-height:.9;letter-spacing:-.03em;text-transform:uppercase}
+h1{font-size:clamp(3rem,12vw,9rem);color:#fff}
+h2{font-size:clamp(2rem,8vw,5rem);color:#ff5e00}
+h3{font-size:clamp(1.2rem,4vw,2rem);color:#aaa}
+p,li{font-size:clamp(.9rem,2.5vw,1.1rem);line-height:1.5;color:#ccc;font-weight:300}
+.acid-text{color:#ff5e00;text-shadow:0 0 40px rgba(255,94,0,.3)}
+.mono{font-family:'JetBrains Mono',monospace;font-size:.75rem;letter-spacing:.05em;color:#666}
+
+/* === NAVIGATION DOTS === */
+#dots{
+  position:fixed;
+  right:clamp(1rem,3vw,2rem);
+  top:50%;
+  transform:translateY(-50%);
+  z-index:100;
+  display:flex;
+  flex-direction:column;
+  gap:.8rem;
+}
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:0;
+  border:1px solid rgba(255,94,0,.4);
+  background:transparent;
+  cursor:pointer;
+  transition:.3s;
+}
+.dot.active{background:#ff5e00;border-color:#ff5e00;box-shadow:0 0 10px rgba(255,94,0,.5)}
+
+/* === SLIDE INDICATOR === */
+#counter{
+  position:fixed;
+  left:clamp(1rem,3vw,2rem);
+  bottom:clamp(1rem,3vw,2rem);
+  z-index:100;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;
+  color:#444;
+}
+
+/* === HERO SLIDE === */
+.hero-img{
+  width:clamp(120px,30vw,220px);
+  height:clamp(120px,30vw,220px);
+  object-fit:cover;
+  border:1px solid rgba(255,94,0,.5);
+  margin-bottom:2rem;
+  filter:grayscale(20%) contrast(1.1);
+  position:relative;
+}
+.hero-img::after{ /* chromatic aberration simulation via border */
+  content:"";
+  position:absolute;
+  inset:-2px;
+  border:1px solid rgba(0,255,255,.2);
+  pointer-events:none;
+}
+.hero-title{
+  text-align:center;
+  margin-bottom:.5rem;
+}
+.hero-sub{
+  text-align:center;
+  margin-bottom:2rem;
+}
+.links-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:1rem;
+  justify-content:center;
+  margin-top:1rem;
+}
+.link-pill{
+  display:inline-block;
+  padding:.6rem 1.2rem;
+  border:1px solid rgba(255,94,0,.5);
+  color:#ff5e00;
+  text-decoration:none;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.75rem;
+  text-transform:uppercase;
+  transition:.3s;
+  background:rgba(255,94,0,.05);
+}
+.link-pill:hover{background:#ff5e00;color:#000}
+
+/* === STACK SLIDE === */
+.stack-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:.8rem;
+  width:min(90%,500px);
+  margin-top:2rem;
+}
+.stack-item{
+  border:1px solid rgba(255,94,0,.3);
+  padding:1rem;
+  text-align:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.8rem;
+  color:#ff8c42;
+  background:rgba(255,94,0,.03);
+  transition:.3s;
+}
+.stack-item:hover{border-color:#ff5e00;background:rgba(255,94,0,.1);transform:translateY(-2px)}
+
+/* === SUPPORT GRID === */
+.support-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:1.2rem;
+  width:min(95%,600px);
+  max-height:60vh;
+  overflow-y:auto;
+  padding-right:.5rem;
+  margin-top:1.5rem;
+}
+.support-card{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  border:1px solid rgba(255,94,0,.25);
+  padding:1rem;
+  background:rgba(255,94,0,.03);
+  transition:.3s;
+}
+.support-card:hover{border-color:#ff5e00;background:rgba(255,94,0,.08)}
+.support-thumb{
+  width:60px;
+  height:60px;
+  object-fit:cover;
+  border:1px solid rgba(255,94,0,.3);
+  flex-shrink:0;
+}
+.support-info h4{font-size:1rem;color:#fff;margin-bottom:.3rem}
+.support-info a{font-size:.7rem;color:#ff8c42;text-decoration:none;font-family:'JetBrains Mono',monospace;display:block;margin-bottom:.15rem}
+.support-info a:hover{color:#ff5e00;text-decoration:underline}
+
+/* === PROJECT SLIDE === */
+.project-list{
+  display:flex;
+  flex-direction:column;
+  gap:1.5rem;
+  width:min(95%,600px);
+  margin-top:2rem;
+}
+.project-card{
+  border:1px solid rgba(255,94,0,.3);
+  padding:1.5rem;
+  background:rgba(255,94,0,.03);
+  transition:.3s;
+  position:relative;
+}
+.project-card:hover{border-color:#ff5e00;transform:translateX(5px)}
+.project-card h3{color:#fff;margin-bottom:.5rem;font-size:1.3rem}
+.project-card p{color:#aaa;font-size:.9rem;margin-bottom:1rem}
+.project-card a{color:#ff5e00;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:.8rem;border-bottom:1px solid rgba(255,94,0,.3);padding-bottom:2px}
+.project-card a:hover{border-bottom-color:#ff5e00}
+
+/* === CONTACT SLIDE === */
+.contact-grid{
+  display:flex;
+  flex-direction:column;
+  gap:1.2rem;
+  width:min(90%,400px);
+  margin-top:2rem;
+}
+.contact-item{
+  display:flex;
+  flex-direction:column;
+  gap:.3rem;
+  border:1px solid rgba(255,94,0,.25);
+  padding:1rem;
+  background:rgba(255,94,0,.03);
+}
+.contact-item .label{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#666;text-transform:uppercase}
+.contact-item a,.contact-item span{color:#fff;text-decoration:none;font-size:1rem;word-break:break-all}
+.contact-item a:hover{color:#ff5e00}
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#0a0a0a}
+::-webkit-scrollbar-thumb{background:#ff5e00}
+
+/* === ANIMATIONS === */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.slide.active .animate{animation:fadeUp .8s cubic-bezier(.22,1,.36,1) forwards}
+.slide.active .delay-1{animation-delay:.1s}
+.slide.active .delay-2{animation-delay:.2s}
+.slide.active .delay-3{animation-delay:.3s}
+.slide.active .delay-4{animation-delay:.4s}
+.slide.active .delay-5{animation-delay:.5s}
+.animate{opacity:0}
+
+/* === SWIPE HINT === */
+#swipe-hint{
+  position:fixed;
+  bottom:2rem;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:100;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;
+  color:#444;
+  animation:pulse 2s infinite;
+  pointer-events:none;
+}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* === RESPONSIVE === */
+@media(min-width:768px){
+  .support-grid{grid-template-columns:1fr 1fr}
+  .stack-grid{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="bg-kinetic"></div>
+
+<div id="dots"></div>
+<div id="counter"><span id="cur">01</span> / <span id="tot">06</span></div>
+<div id="swipe-hint">SWIPE UP / SCROLL / ARROW KEYS</div>
+
+<div id="viewport">
+<div id="track">
+
+<!-- SLIDE 1: HERO / IDENTITY -->
+<section class="slide active" data-index="0">
+  <img src="https://j.top4top.io/p_3799wvgk54.png" alt="reiz_riz" class="hero-img animate delay-1">
+  <h1 class="hero-title animate delay-2 acid-text">reiz_riz</h1>
+  <h3 class="hero-sub animate delay-3">Farizy — Software Dev / AI Engineering / Vibe Coder</h3>
+  <p class="mono animate delay-4" style="text-align:center;margin-bottom:1.5rem">@rixz-dev · whois_rixz</p>
+  <div class="links-row animate delay-5">
+    <a href="https://github.com/rixz-dev" target="_blank" class="link-pill">GitHub</a>
+    <a href="https://t.me/rixzdev" target="_blank" class="link-pill">Telegram</a>
+    <a href="https://t.me/reiz_riz" target="_blank" class="link-pill">AI Prompts</a>
+    <a href="https://www.instagram.com/reiz_riz" target="_blank" class="link-pill">Instagram</a>
+    <a href="https://whatsapp.com/channel/0029Vb7w7clK5cD9rAxc6r20" target="_blank" class="link-pill">WhatsApp</a>
+    <a href="https://tiktok.com/@whois_rixz" target="_blank" class="link-pill">TikTok</a>
+  </div>
+</section>
+
+<!-- SLIDE 2: STORY -->
+<section class="slide" data-index="1">
+  <h2 class="animate acid-text">STORY</h2>
+  <p class="animate delay-1" style="max-width:600px;text-align:center;margin-top:1.5rem">
+    Dua tahun bersama dunia code, AI, dan vibe coding. 
+    Dari PHP sampai Next.js, dari llama.cpp sampai Supabase. 
+    Gua bukan cuma nulis code, gua nge-vibe-in teknologi jadi solusi.
+  </p>
+  <p class="animate delay-2" style="margin-top:1rem">
+    <a href="https://riz-dev-murex.vercel.app" target="_blank" class="link-pill">Kunjungi Portfolio Lama</a>
+  </p>
+  <img src="https://k.top4top.io/p_3799qrefj5.png" alt="Farizy" style="width:140px;height:140px;object-fit:cover;border:1px solid rgba(255,94,0,.4);margin-top:2rem;filter:grayscale(30%) contrast(1.1)" class="animate delay-3">
+</section>
+
+<!-- SLIDE 3: STACK -->
+<section class="slide" data-index="2">
+  <h2 class="animate acid-text">STACK</h2>
+  <p class="animate delay-1 mono" style="margin-bottom:1rem">NO LOGOS. RAW TEXT ONLY.</p>
+  <div class="stack-grid animate delay-2">
+    <div class="stack-item">PHP</div>
+    <div class="stack-item">Python</div>
+    <div class="stack-item">JavaScript</div>
+    <div class="stack-item">Node.js</div>
+    <div class="stack-item">Next.js</div>
+    <div class="stack-item">Supabase</div>
+    <div class="stack-item">llama.cpp</div>
+    <div class="stack-item">GitHub</div>
+    <div class="stack-item">Linux</div>
+    <div class="stack-item">PIP</div>
+  </div>
+</section>
+
+<!-- SLIDE 4: MY SUPPORT -->
+<section class="slide" data-index="3">
+  <h2 class="animate acid-text">SUPPORT</h2>
+  <p class="animate delay-1" style="text-align:center;margin-bottom:.5rem">Squad yang nge-back gua</p>
+  <div class="support-grid animate delay-2">
+
+    <div class="support-card">
+      <img src="https://f.top4top.io/p_3799ozkz50.jpg" alt="RedzFlow" class="support-thumb">
+      <div class="support-info">
+        <h4>RedzFlow</h4>
+        <a href="https://github.com/petangZi" target="_blank">github.com/petangZi</a>
+        <a href="https://www.tiktok.com/@azuredz.ai" target="_blank">tiktok.com/@azuredz.ai</a>
+      </div>
+    </div>
+
+    <div class="support-card">
+      <div class="support-thumb" style="display:flex;align-items:center;justify-content:center;background:rgba(255,94,0,.1);color:#ff5e00;font-family:'JetBrains Mono';font-size:.6rem;text-align:center;border:1px solid rgba(255,94,0,.3)">HIRASAWA<br>.ID</div>
+      <div class="support-info">
+        <h4>HIRASAWA.ID</h4>
+        <a href="https://github.com/Tenkxzz" target="_blank">github.com/Tenkxzz</a>
+        <a href="https://whatsapp.com/channel/0029VbC13UP1CYoODnULpp3E" target="_blank">WhatsApp Channel</a>
+      </div>
+    </div>
+
+    <div class="support-card">
+      <div class="support-thumb" style="display:flex;align-items:center;justify-content:center;background:rgba(255,94,0,.1);color:#ff5e00;font-family:'JetBrains Mono';font-size:.6rem;text-align:center;border:1px solid rgba(255,94,0,.3)">KEVIN</div>
+      <div class="support-info">
+        <h4>Kevin</h4>
+        <a href="https://github.com/ventosilenzioso" target="_blank">github.com/ventosilenzioso</a>
+        <a href="https://www.tiktok.com/@ventosilenzioso" target="_blank">tiktok.com/@ventosilenzioso</a>
+        <a href="https://whatsapp.com/channel/0029VbCeuLM5K3zcAzISsg3S" target="_blank">WhatsApp Channel</a>
+      </div>
+    </div>
+
+    <div class="support-card">
+      <div class="support-thumb" style="display:flex;align-items:center;justify-content:center;background:rgba(255,94,0,.1);color:#ff5e00;font-family:'JetBrains Mono';font-size:.6rem;text-align:center;border:1px solid rgba(255,94,0,.3)">RHMT</div>
+      <div class="support-info">
+        <h4>Rhmt | Code AI</h4>
+        <a href="https://t.me/rAi_engine" target="_blank">t.me/rAi_engine</a>
+        <a href="https://whatsapp.com/channel/0029VbBjyjlJ93wa6hwSWa0p" target="_blank">WhatsApp Channel</a>
+      </div>
+    </div>
+
+    <div class="support-card">
+      <img src="https://i.top4top.io/p_3799gnnt93.jpg" alt="Shadownex" class="support-thumb">
+      <div class="support-info">
+        <h4>Shadownex</h4>
+        <a href="https://github.com/ShadowNex293" target="_blank">github.com/ShadowNex293</a>
+        <a href="https://whatsapp.com/channel/0029Vb8Lge5FHWq3fTan4V0J" target="_blank">WhatsApp Channel</a>
+      </div>
+    </div>
+
+    <div class="support-card">
+      <div class="support-thumb" style="display:flex;align-items:center;justify-content:center;background:rgba(255,94,0,.1);color:#ff5e00;font-family:'JetBrains Mono';font-size:.5rem;text-align:center;border:1px solid rgba(255,94,0,.3)">PTRX<br>OFF</div>
+      <div class="support-info">
+        <h4>Ptrx OFFicial</h4>
+        <a href="https://github.com/ptrxofficial98" target="_blank">github.com/ptrxofficial98</a>
+        <a href="https://whatsapp.com/channel/0029VbB7qrYAjPXKdnnnwK1r" target="_blank">WhatsApp Channel</a>
+      </div>
+    </div>
+
+    <div class="support-card">
+      <img src="https://g.top4top.io/p_3799qbmzi1.jpg" alt="Uda El" class="support-thumb">
+      <div class="support-info">
+        <h4>Uda El vibe coding</h4>
+        <a href="https://github.com/udaanotdev" target="_blank">github.com/udaanotdev</a>
+        <a href="https://whatsapp.com/channel/0029VbCv2yYBqbr1lJK6lU0U" target="_blank">WhatsApp Channel</a>
+      </div>
+    </div>
+
+    <div class="support-card">
+      <div class="support-thumb" style="display:flex;align-items:center;justify-content:center;background:rgba(255,94,0,.1);color:#ff5e00;font-family:'JetBrains Mono';font-size:.6rem;text-align:center;border:1px solid rgba(255,94,0,.3)">ZYVORA</div>
+      <div class="support-info">
+        <h4>Zyvora</h4>
+        <a href="https://whatsapp.com/channel/0029VbCarKyDOQIfNAUjYg0F" target="_blank">WhatsApp Channel</a>
+      </div>
+    </div>
+
+    <div class="support-card">
+      <div class="support-thumb" style="display:flex;align-items:center;justify-content:center;background:rgba(255,94,0,.1);color:#ff5e00;font-family:'JetBrains Mono';font-size:.5rem;text-align:center;border:1px solid rgba(255,94,0,.3)">RK<br>ROZAK</div>
+      <div class="support-info">
+        <h4>RK | Rozak Kairos</h4>
+        <a href="https://github.com/Rozak-Kairos" target="_blank">github.com/Rozak-Kairos</a>
+        <a href="https://whatsapp.com/channel/0029VbCn7jt1t90ZENMcZ32N" target="_blank">WhatsApp Channel</a>
+      </div>
+    </div>
+
+    <div class="support-card">
+      <img src="https://h.top4top.io/p_3799f9dt22.jpg" alt="ZAN" class="support-thumb">
+      <div class="support-info">
+        <h4>ZAN</h4>
+        <a href="https://www.tiktok.com/@zanzxyy4you" target="_blank">tiktok.com/@zanzxyy4you</a>
+        <a href="https://www.instagram.com/Aelz4U" target="_blank">instagram.com/Aelz4U</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SLIDE 5: PROJECTS -->
+<section class="slide" data-index="4">
+  <h2 class="animate acid-text">PROJECTS</h2>
+  <p class="animate delay-1 mono" style="text-align:center;margin-bottom:1rem">SELESAI & LIVE</p>
+  <div class="project-list animate delay-2">
+    <div class="project-card">
+      <h3>rxs-code</h3>
+      <p>Platform live coding & resource buat dev. Built with modern stack, ready buat produksi.</p>
+      <a href="https://rxs-code.vercel.app" target="_blank">rxs-code.vercel.app</a>
+    </div>
+    <div class="project-card">
+      <h3>AI Model Pre-trained</h3>
+      <p>Aria X1 v1.0 — Model AI pre-trained yang gua rilis di HuggingFace buat komunitas.</p>
+      <a href="https://huggingface.co/rixz-aners/aria-x1-v1.0" target="_blank">huggingface.co/rixz-aners/aria-x1-v1.0</a>
+    </div>
+    <div class="project-card">
+      <h3>ryn AI</h3>
+      <p>Base AI engine pribadi. Open source di GitHub, siap di-fork dan dikembangkan.</p>
+      <a href="https://github.com/rixz-dev/Base-ryn-ai" target="_blank">github.com/rixz-dev/Base-ryn-ai</a>
+    </div>
+  </div>
+  <p class="animate delay-3" style="margin-top:1.5rem;text-align:center;font-size:.8rem;color:#555">Kunjungi langsung webnya biar dapet info lebih lanjut.</p>
+</section>
+
+<!-- SLIDE 6: CONTACT -->
+<section class="slide" data-index="5">
+  <h2 class="animate acid-text">CONTACT</h2>
+  <p class="animate delay-1" style="text-align:center;margin-bottom:1.5rem">Ready buat collab atau sekadar ngobrol tech.</p>
+  <div class="contact-grid animate delay-2">
+    <div class="contact-item">
+      <span class="label">Email</span>
+      <a href="mailto:rixzorangbiasa@gmail.com">rixzorangbiasa@gmail.com</a>
+    </div>
+    <div class="contact-item">
+      <span class="label">WhatsApp</span>
+      <a href="https://wa.me/6285828577232" target="_blank">+62 8582 8577 232</a>
+    </div>
+    <div class="contact-item">
+      <span class="label">Telegram</span>
+      <a href="https://t.me/Machamywifee" target="_blank">@Machamywifee</a>
+    </div>
+  </div>
+  <p class="animate delay-3 mono" style="margin-top:2rem;text-align:center;color:#333">reiz_riz / FARIZY / 2026</p>
+</section>
+
+</div>
+</div>
+
+<script>
+/* === SLIDE ENGINE === */
+const track=document.getElementById('track');
+const slides=document.querySelectorAll('.slide');
+const total=slides.length;
+let current=0;
+let isScrolling=false;
+let touchStartY=0;
+
+/* dots */
+const dotsContainer=document.getElementById('dots');
+for(let i=0;i<total;i++){
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' active':'');
+  d.onclick=()=>goTo(i);
+  dotsContainer.appendChild(d);
+}
+const dots=document.querySelectorAll('.dot');
+const curEl=document.getElementById('cur');
+const totEl=document.getElementById('tot');
+totEl.textContent=String(total).padStart(2,'0');
+
+function update(){
+  track.style.transform=`translateY(-${current*100}vh)`;
+  slides.forEach((s,i)=>{
+    s.classList.toggle('active',i===current);
+    s.querySelectorAll('.animate').forEach(el=>{
+      el.style.animation='none';
+      el.offsetHeight; /* reflow */
+      if(i===current){
+        const delay=el.classList.contains('delay-1')?'.1s':el.classList.contains('delay-2')?'.2s':el.classList.contains('delay-3')?'.3s':el.classList.contains('delay-4')?'.4s':el.classList.contains('delay-5')?'.5s':'0s';
+        el.style.animation=`fadeUp .8s cubic-bezier(.22,1,.36,1) ${delay} forwards`;
+      } else {
+        el.style.opacity='0';
+      }
+    });
+  });
+  dots.forEach((d,i)=>d.classList.toggle('active',i===current));
+  curEl.textContent=String(current+1).padStart(2,'0');
+}
+
+function goTo(index){
+  if(index<0||index>=total||isScrolling)return;
+  isScrolling=true;
+  current=index;
+  update();
+  setTimeout(()=>isScrolling=false,900);
+}
+
+function next(){if(current<total-1)goTo(current+1)}
+function prev(){if(current>0)goTo(current-1)}
+
+/* wheel */
+let wheelAccum=0;
+window.addEventListener('wheel',e=>{
+  wheelAccum+=e.deltaY;
+  if(Math.abs(wheelAccum)>60){
+    wheelAccum>0?next():prev();
+    wheelAccum=0;
+  }
+},{passive:true});
+
+/* keyboard */
+window.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'||e.key==='ArrowRight'||e.key===' ')next();
+  if(e.key==='ArrowUp'||e.key==='ArrowLeft')prev();
+});
+
+/* touch */
+window.addEventListener('touchstart',e=>{touchStartY=e.touches[0].clientY},{passive:true});
+window.addEventListener('touchend',e=>{
+  const diff=e.changedTouches[0].clientY-touchStartY;
+  if(Math.abs(diff)>50)diff<0?next():prev();
+},{passive:true});
+
+/* init */
+update();
+</script>
+</body>
 </html>
