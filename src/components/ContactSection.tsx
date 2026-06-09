@@ -9,8 +9,8 @@ const contacts = [
   },
   {
     label: "WHATSAPP",
-    value: "+639976911709",
-    href: "https://wa.me/639976911709",
+    value: "+6285828577232",
+    href: "https://wa.me/6285828577232",
     desc: "Chat langsung",
   },
   {
@@ -34,7 +34,7 @@ const channels = [
   },
   {
     label: "WhatsApp Channel",
-    href: "https://whatsapp.com/channel/0029Vb7pucW8F2pB5qP9Ah0E",
+    href: "https://whatsapp.com/channel/0029Vb7w7clK5cD9rAxc6r20",
     value: "reiz_riz WA",
   },
   {
